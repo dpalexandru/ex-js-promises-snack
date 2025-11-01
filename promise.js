@@ -1,8 +1,4 @@
-//Crea una funzione getPostTitle(id) che accetta un id e restituisce una Promise che recupera il titolo di un post dal link
-//  https://dummyjson.com/posts/{id}
-
-const link = "https://dummyjson.com/posts/"
-
+const link = "https://dummyjson.com/posts/";
 
 // funzione getPostTitle
 const getPostTitle = (id) => {
@@ -15,7 +11,27 @@ const getPostTitle = (id) => {
   })
 }
 
-//uso la funzione 
-getPostTitle(9)
-  .then(title => console.log(title))
-  .catch(err => console.error(err));
+const getPost = (id) => {
+  return fetch(`${link}${id}`)
+    .then(res => res.json())
+    .then(post => {
+      // rseconda pattch 
+      return fetch(`https://dummyjson.com/users/${post.userId}`)
+        .then(res => res.json())
+        .then(user => ({
+          ...post,
+          user
+        }))
+        .catch(error => reject("error " + error))
+    })
+    .catch(error => reject("error " + error))
+
+};
+
+const id = 11
+// uso
+getPostTitle(id).then(console.log).catch(console.error);
+
+getPost(id)
+  .then(postConUtente => console.log(postConUtente))
+  .catch(err => console.error("error:", err));
